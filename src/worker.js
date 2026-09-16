@@ -1,4 +1,5 @@
-const CACHE_TTL_SECONDS = 10 * 60;
+const STATS_KEY = "social-stats:v1";
+const FRESH_FOR_MS = 10 * 60 * 1000;
 const TELEGRAM_URL = "https://t.me/yuxiazx";
 const TIKTOK_URL = "https://www.tiktok.com/@yuxiazxc";
 
@@ -7,7 +8,7 @@ function json(data, status = 200, extraHeaders = {}) {
     status,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": `public, max-age=60, s-maxage=${CACHE_TTL_SECONDS}`,
+      "Cache-Control": "public, max-age=60",
       ...extraHeaders,
     },
   });
@@ -58,37 +59,62 @@ async function getTikTokStats() {
   };
 }
 
-async function collectStats() {
-  const [telegram, tiktok] = await Promise.all([
+async function readStoredStats(env) {
+  return env.STATS_KV.get(STATS_KEY, "json");
+}
+
+function isFresh(stats) {
+  return Boolean(
+    stats?.updatedAt && Date.now() - Date.parse(stats.updatedAt) < FRESH_FOR_MS,
+  );
+}
+
+async function refreshStats(env) {
+  const previous = (await readStoredStats(env)) || {};
+  const [telegram, tiktok] = await Promise.allSettled([
     getTelegramCount(),
     getTikTokStats(),
   ]);
 
-  return {
-    telegram,
-    tiktokFollowers: tiktok.followers,
-    tiktokLikes: tiktok.likes,
+  const next = {
+    telegram:
+      telegram.status === "fulfilled" ? telegram.value : previous.telegram ?? null,
+    tiktokFollowers:
+      tiktok.status === "fulfilled"
+        ? tiktok.value.followers
+        : previous.tiktokFollowers ?? null,
+    tiktokLikes:
+      tiktok.status === "fulfilled"
+        ? tiktok.value.likes
+        : previous.tiktokLikes ?? null,
     updatedAt: new Date().toISOString(),
   };
+
+  if (![next.telegram, next.tiktokFollowers, next.tiktokLikes].some(Number.isFinite)) {
+    throw new Error("No social statistics are available");
+  }
+
+  await env.STATS_KV.put(STATS_KEY, JSON.stringify(next));
+  return next;
 }
 
-async function handleStatsRequest(request, ctx) {
-  const cache = caches.default;
-  const cacheKey = new Request(request.url, { method: "GET" });
-  const cached = await cache.match(cacheKey);
+async function handleStatsRequest(env, ctx) {
+  if (!env.STATS_KV) {
+    return json({ error: "Statistics storage is not configured" }, 503);
+  }
 
-  if (cached) {
-    const response = new Response(cached.body, cached);
-    response.headers.set("X-Stats-Cache", "hit");
-    return response;
+  const stored = await readStoredStats(env);
+  if (stored && isFresh(stored)) {
+    return json(stored, 200, { "X-Stats-Cache": "fresh" });
+  }
+
+  if (stored) {
+    ctx.waitUntil(refreshStats(env).catch((error) => console.error(error.message)));
+    return json(stored, 200, { "X-Stats-Cache": "stale" });
   }
 
   try {
-    const response = json(await collectStats(), 200, {
-      "X-Stats-Cache": "miss",
-    });
-    ctx.waitUntil(cache.put(cacheKey, response.clone()));
-    return response;
+    return json(await refreshStats(env), 200, { "X-Stats-Cache": "miss" });
   } catch (error) {
     console.error(error.message);
     return json({ error: "Statistics are temporarily unavailable" }, 503, {
@@ -102,7 +128,7 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/stats" && request.method === "GET") {
-      return handleStatsRequest(request, ctx);
+      return handleStatsRequest(env, ctx);
     }
 
     if (url.pathname.startsWith("/api/")) {
@@ -110,5 +136,9 @@ export default {
     }
 
     return env.ASSETS.fetch(request);
+  },
+
+  async scheduled(_controller, env, ctx) {
+    ctx.waitUntil(refreshStats(env).catch((error) => console.error(error.message)));
   },
 };
