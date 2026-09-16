@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8f8ff">
+  <meta name="description" content="Yuxia — visual creator, aesthetic edits and lifestyle.">
+  <title>Yuxia — Personal Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <span class="glow glow--one"></span>
+    <span class="glow glow--two"></span>
+    <span class="glow glow--three"></span>
+    <span class="sparkle sparkle--one">✦</span>
+    <span class="sparkle sparkle--two">✧</span>
+    <span class="sparkle sparkle--three">✦</span>
+  </div>
+  <div class="stardust" id="stardust" aria-hidden="true"></div>
+
+  <div class="site-shell">
+    <main class="page-main">
+      <header class="topbar" aria-label="Статус профиля">
+        <div class="status-pill glass-pill">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="status-star" aria-hidden="true">✦</span>
+          <span>Online in Cyber Sky</span>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="edition-pill glass-pill" aria-hidden="true">
+            <span>★</span>
+            <span>Personal Space</span>
+          </div>
+          <button class="share-button glass-pill" id="shareButton" type="button" aria-label="Скопировать ссылку на сайт" title="Скопировать ссылку">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.5 13.5a4 4 0 0 0 5.66 0l2.12-2.12a4 4 0 0 0-5.66-5.66L11.4 6.94m2.1 3.56a4 4 0 0 0-5.66 0l-2.12 2.12a4 4 0 0 0 5.66 5.66l1.22-1.22"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="portal">
+        <section class="profile-panel" aria-labelledby="profile-title">
+          <div class="avatar-wrap">
+            <div class="avatar-glow" aria-hidden="true"></div>
+            <div class="avatar-frame">
+              <img src="assets/images/avatar.jpg" alt="Аватар Yuxia" width="320" height="320">
+            </div>
+            <span class="creator-badge"><span aria-hidden="true">✦</span> Creator</span>
+            <span class="verified-badge" aria-label="Верифицированный профиль">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="m6.4 10.3 2.2 2.2 5-5"/>
+              </svg>
+            </span>
+          </div>
+
+          <div class="identity">
+            <div class="name-row">
+              <h1 id="profile-title">Yuxia</h1>
+              <span class="desktop-check" aria-label="Верифицированный профиль">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 10.2 2.7 2.7 6.2-6.2"/></svg>
+              </span>
+            </div>
+            <p class="handle">@yuxiazxc</p>
+          </div>
+
+          <p class="bio-pill glass-pill"><span aria-hidden="true">✦</span> Visual Creator ✦ Aesthetic Edits &amp; Lifestyle</p>
+          <p class="description">Создаю визуальные миры, кинематографичные эдиты и атмосферные истории. Добро пожаловать в моё личное пространство.</p>
+        </section>
+
+        <section class="channels-panel" aria-label="Социальные сети">
+          <div class="stats" aria-label="Статистика профиля">
+            <a class="stat-card glass-card" href="https://t.me/yuxiazx" target="_blank" rel="noopener noreferrer" aria-label="Открыть Telegram Yuxia">
+              <strong data-stat="telegram">31</strong>
+              <span>единомышленник</span>
+              <small>Telegram</small>
+            </a>
+            <a class="stat-card glass-card" href="https://www.tiktok.com/@yuxiazxc" target="_blank" rel="noopener noreferrer" aria-label="Открыть TikTok Yuxia">
+              <strong data-stat="tiktok-followers">2 824</strong>
+              <span>подписчика</span>
+              <small>TikTok</small>
+            </a>
+            <a class="stat-card stat-card--likes glass-card" href="https://www.tiktok.com/@yuxiazxc" target="_blank" rel="noopener noreferrer" aria-label="Открыть TikTok Yuxia">
+              <strong data-stat="tiktok-likes">21.5K</strong>
+              <span>лайков</span>
+              <small>TikTok</small>
+            </a>
+          </div>
+
+          <div class="channel-list">
+            <a class="channel-card glass-card" href="https://t.me/yuxiazx" target="_blank" rel="noopener noreferrer">
+              <span class="channel-icon channel-icon--telegram" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03 0-.13-.05-.18-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27 0 .06.01.24 0 .38Z"/></svg>
+              </span>
+              <span class="channel-copy">
+                <span class="channel-title-row">
+                  <strong>Мой Telegram-канал</strong>
+                  <span class="tag">Exclusive</span>
+                </span>
+                <span class="channel-description">Эксклюзивные бэкстейджи, личные моменты и ранний доступ к видео</span>
+                <span class="channel-meta channel-meta--blue"><i></i> <span><span data-stat="telegram">31</span> единомышленник</span></span>
+              </span>
+              <span class="arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <a class="channel-card glass-card" href="https://www.tiktok.com/@yuxiazxc" target="_blank" rel="noopener noreferrer">
+              <span class="channel-icon channel-icon--tiktok" aria-hidden="true">
+                <img class="tiktok-logo" src="assets/images/tiktok.svg" alt="">
+              </span>
+              <span class="channel-copy">
+                <span class="channel-title-row">
+                  <strong>Мой TikTok</strong>
+                  <span class="tag tag--dark">Микстейпы &amp; эдиты</span>
+                </span>
+                <span class="channel-description">Атмосферные микстейп-эдиты, динамичный монтаж и отрывки интервью</span>
+                <span class="channel-meta"><i></i> <span><span data-stat="tiktok-followers">2 824</span> подписчика <b>•</b> <span data-stat="tiktok-likes">21.5K</span> лайков</span></span>
+              </span>
+              <span class="arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <nav class="quick-actions" aria-label="Быстрые ссылки">
+          <a class="cta cta--primary" href="https://t.me/yuxiazx" target="_blank" rel="noopener noreferrer">
+            <span class="light-sweep" aria-hidden="true"></span>
+            <svg class="cta-brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3.4 2.9 10.6c-1.3.5-1.3 1.2-.2 1.6l4.8 1.5 1.8 5.5c.2.6.1.9.7.9.5 0 .7-.2 1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.3 1.7-.8L23 4.9c.3-1.3-.5-1.9-1.5-1.5ZM9.4 13.4l9.4-5.9c.5-.3.9-.1.5.2l-7.8 7-.3 3.2-1.8-4.5Z"/></svg>
+            <span>Telegram</span>
+          </a>
+          <a class="cta cta--secondary" href="https://www.tiktok.com/@yuxiazxc" target="_blank" rel="noopener noreferrer">
+            <span class="light-sweep light-sweep--delayed" aria-hidden="true"></span>
+            <img class="cta-brand-icon tiktok-logo" src="assets/images/tiktok.svg" alt="" aria-hidden="true">
+            <span>TikTok</span>
+          </a>
+        </nav>
+      </div>
+    </main>
+
+    <footer class="page-footer">
+      <span>✦ Yuxia • <span id="year">2026</span> ✦</span>
+      <span>Curated by Yuxia • Personal Space</span>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Ссылка на профиль скопирована ✨</div>
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>
