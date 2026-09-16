@@ -2,6 +2,8 @@
 
 Адаптивная bio-link страница с живыми счётчиками Telegram и TikTok на Cloudflare Workers.
 
+Основной публичный адрес: `https://yuxiazx.pages.dev`. Cloudflare Pages Function проксирует `/api/stats` к Worker с KV-кэшем; исходный адрес Worker остаётся резервным.
+
 ## Локальный запуск
 
 ```bash

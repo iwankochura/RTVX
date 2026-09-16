@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "deploy:pages": "wrangler pages deploy public --project-name yuxiazx --branch main",
     "build:inline": "node scripts/build-inline-worker.mjs",
-    "check": "node --check src/worker.js && node --check public/assets/js/app.js"
+    "check": "node --check src/worker.js && node --check functions/api/stats.js && node --check public/assets/js/app.js"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

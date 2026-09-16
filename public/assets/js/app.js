@@ -7,7 +7,7 @@ const compactFormatter = new Intl.NumberFormat("en", {
   maximumFractionDigits: 1,
 });
 
-const SITE_URL = "https://yuxia-bio-link.ivankochura0929.workers.dev";
+const SITE_URL = "https://yuxiazx.pages.dev";
 
 if (year) {
   year.textContent = String(new Date().getFullYear());
