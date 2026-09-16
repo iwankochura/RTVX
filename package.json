@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "build:inline": "node scripts/build-inline-worker.mjs",
     "check": "node --check src/worker.js && node --check public/assets/js/app.js"
   },
   "devDependencies": {

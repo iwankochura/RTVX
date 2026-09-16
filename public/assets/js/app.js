@@ -7,8 +7,7 @@ const compactFormatter = new Intl.NumberFormat("en", {
   maximumFractionDigits: 1,
 });
 
-// После публикации вставьте сюда полный адрес, например: "https://yuxia.me"
-const SITE_URL = "";
+const SITE_URL = "https://yuxia-bio-link.ivankochura0929.workers.dev";
 
 if (year) {
   year.textContent = String(new Date().getFullYear());
