@@ -11,6 +11,7 @@
     "check": "node --check src/worker.js && node --check functions/api/stats.js && node --check public/assets/js/app.js"
   },
   "devDependencies": {
+    "playwright-core": "^1.63.0",
     "wrangler": "^4.0.0"
   }
 }

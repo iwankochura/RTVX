@@ -1,5 +1,5 @@
 const STATS_KEY = "social-stats:v1";
-const FRESH_FOR_MS = 10 * 60 * 1000;
+const FRESH_FOR_MS = 2 * 60 * 1000;
 const TELEGRAM_URL = "https://t.me/yuxiazx";
 const TIKTOK_URL = "https://www.tiktok.com/@yuxiazxc";
 
