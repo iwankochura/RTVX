@@ -1,26 +1,10 @@
-const STATS_ENDPOINT =
-  "https://yuxia-bio-link.ivankochura0929.workers.dev/api/stats";
+import worker from "../../src/worker.js";
 
-export async function onRequestGet() {
-  try {
-    const upstream = await fetch(STATS_ENDPOINT, {
-      headers: { Accept: "application/json" },
-    });
-    const headers = new Headers(upstream.headers);
-    headers.set("Cache-Control", "public, max-age=60");
-    headers.set("X-Robots-Tag", "noindex");
-
-    return new Response(upstream.body, {
-      status: upstream.status,
-      headers,
-    });
-  } catch (error) {
-    console.error(error.message);
-    return Response.json(
-      { error: "Statistics are temporarily unavailable" },
-      { status: 503, headers: { "Cache-Control": "no-store" } },
-    );
-  }
+export async function onRequestGet(context) {
+  const response = await worker.fetch(context.request, context.env, context);
+  const headers = new Headers(response.headers);
+  headers.set("X-Robots-Tag", "noindex");
+  return new Response(response.body, { status: response.status, headers });
 }
 
 export function onRequest() {

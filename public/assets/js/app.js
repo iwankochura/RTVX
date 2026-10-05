@@ -1,19 +1,38 @@
 // ================================================================
-// YUXIA BIO LINK — Animation & Interaction Engine v3
+// RTVX — page interactions
 // ================================================================
 
 const shareButton = document.querySelector("#shareButton");
+const copyEmailButton = document.querySelector("#copyEmail");
+const contactEmail = document.querySelector("#contactEmail");
 const themeToggle = document.querySelector("#themeToggle");
-const themeMeta   = document.querySelector('meta[name="theme-color"]');
+const themeColor = document.querySelector('meta[name="theme-color"]');
 const toast       = document.querySelector("#toast");
 const year        = document.querySelector("#year");
 
 const numberFormatter  = new Intl.NumberFormat("ru-RU");
 const compactFormatter = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 
-const SITE_URL = "https://yuxiazx.pages.dev";
-
 if (year) year.textContent = String(new Date().getFullYear());
+
+function setTheme(theme) {
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  if (themeColor) themeColor.content = dark ? "#0b1117" : "#e8edef";
+  if (themeToggle) {
+    const label = dark ? "Включить светлую тему" : "Включить тёмную тему";
+    themeToggle.setAttribute("aria-label", label);
+    themeToggle.setAttribute("title", label);
+    themeToggle.setAttribute("aria-pressed", String(dark));
+  }
+}
+
+setTheme(document.documentElement.dataset.theme);
+themeToggle?.addEventListener("click", () => {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  setTheme(nextTheme);
+  try { localStorage.setItem("rtvx-theme", nextTheme); } catch { /* Theme still changes. */ }
+});
 
 // ── 1. Russian Pluralisation ─────────────────────────────────────
 function getRussianPlural(number, [one, few, many]) {
@@ -27,33 +46,12 @@ function getRussianPlural(number, [one, few, many]) {
 }
 
 const PLURAL_DICTIONARY = {
-  "telegram":        ["подписчиков",     "подписчика",       "подписчиков"],
+  "telegram":        ["подписчик",       "подписчика",       "подписчиков"],
   "tiktok-followers":["подписчик",       "подписчика",       "подписчиков"],
   "tiktok-likes":    ["лайк",            "лайка",            "лайков"],
 };
 
-// ── 2. Theme Toggle ──────────────────────────────────────────────
-let redrawCanvas = null;
-
-function applyTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  try { localStorage.setItem("yuxia-theme", theme); } catch {}
-  if (themeMeta) themeMeta.setAttribute("content", theme === "dark" ? "#040813" : "#e6f6ff");
-  if (typeof redrawCanvas === "function") redrawCanvas();
-}
-
-themeToggle?.addEventListener("click", () => {
-  const current = document.documentElement.getAttribute("data-theme") || "light";
-  applyTheme(current === "dark" ? "light" : "dark");
-});
-
-try {
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-    if (!localStorage.getItem("yuxia-theme")) applyTheme(e.matches ? "dark" : "light");
-  });
-} catch {}
-
-// ── 3. Toast / Link Copy ─────────────────────────────────────────
+// ── 2. Toast / Link Copy ─────────────────────────────────────────
 let toastTimer;
 function showToast(message) {
   if (!toast) return;
@@ -63,25 +61,27 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2400);
 }
 
-async function copySiteLink() {
-  const link = SITE_URL.trim() || location.href;
+async function copyText(text, successMessage) {
+  let copied = false;
   try {
-    await navigator.clipboard.writeText(link);
-    showToast("Ссылка на сайт скопирована ✨");
+    await navigator.clipboard.writeText(text);
+    copied = true;
   } catch {
     const ta = document.createElement("textarea");
-    ta.value = link;
+    ta.value = text;
     ta.style.cssText = "position:fixed;opacity:0";
     document.body.appendChild(ta);
     ta.select();
-    const ok = document.execCommand("copy");
-    ta.remove();
-    showToast(ok ? "Ссылка на сайт скопирована ✨" : "Не удалось скопировать");
+    try { copied = document.execCommand("copy"); }
+    catch { copied = false; }
+    finally { ta.remove(); }
   }
+  showToast(copied ? successMessage : "Не удалось скопировать");
 }
-shareButton?.addEventListener("click", copySiteLink);
+shareButton?.addEventListener("click", () => copyText(location.href.split("#")[0], "Ссылка на сайт скопирована ✨"));
+copyEmailButton?.addEventListener("click", () => copyText(contactEmail.textContent.trim(), "Адрес почты скопирован"));
 
-// ── 4. Live Social Stats ─────────────────────────────────────────
+// ── 3. Live Social Stats ─────────────────────────────────────────
 function updateStat(name, value, fmt = numberFormatter) {
   if (!Number.isFinite(value)) return;
   const str = fmt.format(value);
@@ -105,14 +105,14 @@ async function loadSocialStats() {
 loadSocialStats();
 setInterval(loadSocialStats, 2 * 60 * 1000);
 
-// ── 5. Ambient Stardust Particles ────────────────────────────────
+// ── 4. Ambient Fog Particles ──────────────────────────────────────
 function createStardust() {
   const container    = document.querySelector("#stardust");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!container || reduceMotion) return;
 
   const frag = document.createDocumentFragment();
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 12; i++) {
     const p = document.createElement("span");
     p.className = "dust";
     p.style.left = `${(Math.random() * 98).toFixed(1)}%`;
@@ -127,7 +127,7 @@ function createStardust() {
 createStardust();
 
 // ================================================================
-// 6. LIQUID GLASS 3-D TILT ENGINE — PORTAL & CARD UNIFIED 3D PHYSICS
+// 5. LIQUID GLASS 3-D TILT ENGINE — PORTAL & CARD UNIFIED 3D PHYSICS
 // Zero jitter, window-tracked active card, independent CSS tokens
 // ================================================================
 function initLiquidTilt() {
@@ -279,7 +279,7 @@ function initLiquidTilt() {
 initLiquidTilt();
 
 // ================================================================
-// 7. INTERACTIVE LIQUID CAUSTICS BACKGROUND CANVAS
+// 6. INTERACTIVE FOG BACKGROUND CANVAS
 // Fluid multi-harmonic sine waves + cursor disturbance + idle wander
 // ================================================================
 function initLiquidCanvas() {
@@ -321,22 +321,22 @@ function initLiquidCanvas() {
   resize();
 
   function getLayers(dark) {
-    return dark ? [
-      { by: 0.44, a1: 48, f1: 0.0016, a2: 26, f2: 0.0034, spd:  0.016, stops: [[0,"rgba(14,165,233,.22)"],[.5,"rgba(99,102,241,.18)"],[1,"rgba(56,189,248,.04)"]] },
-      { by: 0.58, a1: 58, f1: 0.0022, a2: 32, f2: 0.0046, spd: -0.020, stops: [[0,"rgba(99,102,241,.20)"],[.5,"rgba(34,211,238,.15)"],[1,"rgba(14,165,233,.03)"]] },
-      { by: 0.72, a1: 68, f1: 0.0014, a2: 38, f2: 0.0028, spd:  0.012, stops: [[0,"rgba(56,189,248,.18)"],[.6,"rgba(14,165,233,.11)"],[1,"rgba(6,12,23,0)"]]      },
-    ] : [
-      { by: 0.42, a1: 44, f1: 0.0015, a2: 24, f2: 0.0032, spd:  0.014, stops: [[0,"rgba(56,189,248,.34)"],[.5,"rgba(125,211,252,.26)"],[1,"rgba(224,242,254,.07)"]] },
-      { by: 0.56, a1: 54, f1: 0.002,  a2: 28, f2: 0.0042, spd: -0.018, stops: [[0,"rgba(14,165,233,.27)"],[.5,"rgba(186,230,253,.30)"],[1,"rgba(240,249,255,.05)"]] },
-      { by: 0.70, a1: 64, f1: 0.0012, a2: 32, f2: 0.0026, spd:  0.010, stops: [[0,"rgba(125,211,252,.30)"],[.6,"rgba(56,189,248,.18)"],[1,"rgba(255,255,255,0)"]]   },
+    if (dark) return [
+      { by: 0.42, a1: 44, f1: 0.0015, a2: 24, f2: 0.0032, spd:  0.014, stops: [[0,"rgba(124,148,158,.10)"],[.5,"rgba(61,83,94,.08)"],[1,"rgba(11,17,23,0)"]] },
+      { by: 0.57, a1: 54, f1: 0.002,  a2: 28, f2: 0.0042, spd: -0.018, stops: [[0,"rgba(145,160,167,.08)"],[.5,"rgba(57,74,82,.07)"],[1,"rgba(11,17,23,0)"]] },
+      { by: 0.72, a1: 64, f1: 0.0012, a2: 32, f2: 0.0026, spd:  0.010, stops: [[0,"rgba(204,54,66,.055)"],[.6,"rgba(91,111,119,.06)"],[1,"rgba(11,17,23,0)"]] },
+    ];
+    return [
+      { by: 0.42, a1: 44, f1: 0.0015, a2: 24, f2: 0.0032, spd:  0.014, stops: [[0,"rgba(180,194,201,.23)"],[.5,"rgba(230,235,238,.19)"],[1,"rgba(255,255,255,0)"]] },
+      { by: 0.57, a1: 54, f1: 0.002,  a2: 28, f2: 0.0042, spd: -0.018, stops: [[0,"rgba(117,137,148,.15)"],[.5,"rgba(201,211,215,.17)"],[1,"rgba(255,255,255,0)"]] },
+      { by: 0.72, a1: 64, f1: 0.0012, a2: 32, f2: 0.0026, spd:  0.010, stops: [[0,"rgba(181,49,58,.06)"],[.6,"rgba(103,120,129,.11)"],[1,"rgba(255,255,255,0)"]] },
     ];
   }
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    const dark   = document.documentElement.getAttribute("data-theme") === "dark";
-    const layers = getLayers(dark);
+    const layers = getLayers(document.documentElement.dataset.theme === "dark");
     const idle   = performance.now() - lastInteraction > 1800;
 
     // Smooth pointer lerp / idle wander
@@ -383,8 +383,6 @@ function initLiquidCanvas() {
       ctx.fill();
     });
   }
-
-  redrawCanvas = draw;
 
   function loop() {
     time++;

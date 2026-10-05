@@ -1,7 +1,7 @@
-const STATS_KEY = "social-stats:v1";
+const STATS_KEY = "social-stats:rtvx:v1";
 const FRESH_FOR_MS = 2 * 60 * 1000;
-const TELEGRAM_URL = "https://t.me/yuxiazx";
-const TIKTOK_URL = "https://www.tiktok.com/@yuxiazxc";
+const TELEGRAM_URL = "https://t.me/rtvx929";
+const TIKTOK_URL = "https://www.tiktok.com/@somebodyyy14";
 
 function json(data, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
@@ -35,6 +35,9 @@ async function fetchProfile(url) {
 async function getTelegramCount() {
   const html = await fetchProfile(TELEGRAM_URL);
   const extra = html.match(/tgme_page_extra[^>]*>\s*([^<]+)</i)?.[1] || "";
+  if (!/\d/.test(extra)) {
+    throw new Error("Telegram subscriber count was not found");
+  }
   const count = Number(extra.replace(/[^\d]/g, ""));
 
   if (!Number.isFinite(count) || count < 0) {
@@ -60,7 +63,7 @@ async function getTikTokStats() {
 }
 
 async function readStoredStats(env) {
-  return env.STATS_KV.get(STATS_KEY, "json");
+  return env.STATS_KV ? env.STATS_KV.get(STATS_KEY, "json") : null;
 }
 
 function isFresh(stats) {
@@ -94,15 +97,13 @@ async function refreshStats(env) {
     throw new Error("No social statistics are available");
   }
 
-  await env.STATS_KV.put(STATS_KEY, JSON.stringify(next));
+  if (env.STATS_KV) {
+    await env.STATS_KV.put(STATS_KEY, JSON.stringify(next));
+  }
   return next;
 }
 
 async function handleStatsRequest(env, ctx) {
-  if (!env.STATS_KV) {
-    return json({ error: "Statistics storage is not configured" }, 503);
-  }
-
   const stored = await readStoredStats(env);
   if (stored && isFresh(stored)) {
     return json(stored, 200, { "X-Stats-Cache": "fresh" });

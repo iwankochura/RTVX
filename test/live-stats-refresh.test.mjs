@@ -25,10 +25,10 @@ test("refreshes social statistics when the cached value is older than two minute
   const ctx = { waitUntil(promise) { pending.push(promise); } };
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url) => {
-    if (url === "https://t.me/yuxiazx") {
+    if (url === "https://t.me/rtvx929") {
       return new Response('<div class="tgme_page_extra">33 subscribers</div>');
     }
-    if (url === "https://www.tiktok.com/@yuxiazxc") {
+    if (url === "https://www.tiktok.com/@somebodyyy14") {
       return new Response('{"followerCount":2835,"heartCount":21900}');
     }
     throw new Error(`Unexpected URL: ${url}`);
